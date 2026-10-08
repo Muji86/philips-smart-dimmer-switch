@@ -1,0 +1,66 @@
+{
+  "config": {
+    "flow_title": "Philips Remote ({address})",
+    "step": {
+      "user": {
+        "title": "Add a Philips remote",
+        "menu_options": {
+          "detect": "Press a button on the remote to detect it",
+          "manual": "Enter its Bluetooth address"
+        }
+      },
+      "detect_timeout": {
+        "title": "No remote detected",
+        "description": "No button press from a new Philips remote was seen in 60 seconds. Make sure the remote is within range of Home Assistant's Bluetooth and try again.",
+        "menu_options": {
+          "detect": "Try again",
+          "manual": "Enter its Bluetooth address"
+        }
+      },
+      "detect_confirm": {
+        "title": "Remote found",
+        "description": "Found remote {address} (you pressed **{button}**, battery {battery}%). Add it?"
+      },
+      "manual": {
+        "title": "Enter the remote's address",
+        "data": { "address": "Bluetooth address" },
+        "data_description": { "address": "For example 98:77:D5:50:D1:AC" }
+      },
+      "bluetooth_confirm": {
+        "description": "Set up the Philips remote {address}?"
+      }
+    },
+    "progress": {
+      "press_button": "Press any button on the remote now. Waiting up to 60 seconds…"
+    },
+    "error": {
+      "invalid_address": "That isn't a valid Bluetooth address."
+    },
+    "abort": {
+      "already_configured": "This remote is already set up.",
+      "not_supported": "This device doesn't look like a supported Philips remote."
+    }
+  },
+  "entity": {
+    "event": {
+      "button": {
+        "name": "Button",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "on": "On",
+              "off": "Off",
+              "brightness_up": "Brightness up",
+              "brightness_down": "Brightness down",
+              "button_1": "Button 1",
+              "button_2": "Button 2",
+              "button_3": "Button 3",
+              "button_4": "Button 4",
+              "unknown": "Unknown button"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "bluetooth": [
+    {
+      "manufacturer_id": 1559,
+      "connectable": false
+    }
+  ],
+  "codeowners": [
+    "@Muji86"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "bluetooth_adapters"
+  ],
+  "documentation": "https://github.com/Muji86/philips-smart-dimmer-switch",
+  "domain": "philips_ble_remote",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/Muji86/philips-smart-dimmer-switch/issues",
+  "name": "Philips BLE Remote",
+  "requirements": [],
+  "version": "2.0.0"
+}
