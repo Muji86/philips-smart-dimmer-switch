@@ -17,8 +17,10 @@ BUTTONS: dict[int, str] = {
 }
 UNKNOWN = "unknown"
 
-# Same button pressed again (new press counter) within this many seconds is a double press.
+# With double press enabled, a press is held this many seconds waiting for a second one
+# of the same button; two within the window become a single "<button>_double" event.
 DOUBLE_PRESS_WINDOW = 0.5
+CONF_DOUBLE_PRESS = "double_press"
 DOUBLE_SUFFIX = "_double"
 EVENT_TYPES: list[str] = [
     *BUTTONS.values(),

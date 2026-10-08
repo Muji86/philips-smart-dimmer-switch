@@ -74,5 +74,18 @@
         }
       }
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Philips remote options",
+        "data": {
+          "double_press": "Enable double press"
+        },
+        "data_description": {
+          "double_press": "Fire a \"<button>_double\" event when a button is pressed twice within 0.5 seconds. Every press is then held for 0.5 seconds to see whether a second one follows, which delays single presses. When off, presses are reported instantly and double presses are not detected."
+        }
+      }
+    }
   }
 }

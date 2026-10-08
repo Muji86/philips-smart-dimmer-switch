@@ -10,11 +10,16 @@ import voluptuous as vol
 
 from homeassistant.components import bluetooth
 from homeassistant.components.bluetooth import BluetoothServiceInfoBleak
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import callback
 
-from .const import DOMAIN, MANUFACTURER_ID
+from .const import CONF_DOUBLE_PRESS, DOMAIN, MANUFACTURER_ID
 from .parser import Press, parse
 
 TITLE = "Philips Remote"
@@ -29,6 +34,11 @@ class PhilipsBleRemoteConfigFlow(ConfigFlow, domain=DOMAIN):
         self._address: str | None = None
         self._press: Press | None = None
         self._detect_task: asyncio.Task[tuple[str, Press]] | None = None
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        return PhilipsBleRemoteOptionsFlow()
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -150,3 +160,16 @@ class PhilipsBleRemoteConfigFlow(ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(address, raise_on_progress=False)
         self._abort_if_unique_id_configured()
         return self.async_create_entry(title=TITLE, data={CONF_ADDRESS: address})
+
+
+class PhilipsBleRemoteOptionsFlow(OptionsFlow):
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        if user_input is not None:
+            return self.async_create_entry(data=user_input)
+        current = self.config_entry.options.get(CONF_DOUBLE_PRESS, False)
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({vol.Required(CONF_DOUBLE_PRESS, default=current): bool}),
+        )
