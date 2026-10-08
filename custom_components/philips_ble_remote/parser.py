@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 from homeassistant.components.bluetooth import BluetoothServiceInfoBleak
 
-from .const import BUTTONS, MANUFACTURER_ID, UNKNOWN
+from .const import BUTTONS, DOUBLE_SUFFIX, MANUFACTURER_ID, UNKNOWN
 
 
 @dataclass(frozen=True)
@@ -21,10 +21,12 @@ class Press:
     button: int
     press_type: int
     battery: int
+    double: bool = False
 
     @property
     def name(self) -> str:
-        return BUTTONS.get(self.button, UNKNOWN)
+        name = BUTTONS.get(self.button, UNKNOWN)
+        return f"{name}{DOUBLE_SUFFIX}" if self.double and name != UNKNOWN else name
 
 
 def parse(service_info: BluetoothServiceInfoBleak) -> Press | None:

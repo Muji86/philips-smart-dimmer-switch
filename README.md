@@ -4,7 +4,7 @@ A Home Assistant custom integration for the **Philips Hue Smart Dimmer Switch–
 
 ## Features
 
-- **Event entity** that fires on every button press (`on`, `off`, `brightness_up`, `brightness_down`, `button_1`–`button_4`).
+- **Event entity** that fires on every button press (`on`, `off`, `brightness_up`, `brightness_down`, `button_1`–`button_4`), plus a `<button>_double` event for double presses.
 - **Battery sensor** (diagnostic), updated on each press and restored across restarts.
 - Repeated advertisements of the same press are de-duplicated using the remote's press counter.
 - Setup by **auto-discovery**, by **pressing a button** to detect the remote, or by **entering the Bluetooth address**.
@@ -41,8 +41,12 @@ Each remote is added as its own device.
 
 | Entity | Type | Notes |
 |---|---|---|
-| Button | `event` | Event types: `on`, `off`, `brightness_up`, `brightness_down`, `button_1`–`button_4`, `unknown`. Attributes include the raw `button` code and `press_type`. |
+| Button | `event` | Event types: `on`, `off`, `brightness_up`, `brightness_down`, `button_1`–`button_4`, each with a `_double` variant (e.g. `on_double`), and `unknown`. Attributes include the raw `button` code and `press_type`. |
 | Battery | `sensor` | Percent, diagnostic. Updates when a button is pressed. |
+
+## Double press
+
+Pressing the same button twice within 0.5 seconds fires the normal event for each press, and the second press is followed immediately by a `<button>_double` event (e.g. `on`, then `on` + `on_double`). Nothing is delayed, so single presses stay instant; to react only to a double press, trigger on the `_double` event type. The window is `DOUBLE_PRESS_WINDOW` in `const.py`.
 
 ## Automation example
 

@@ -23,8 +23,12 @@
       },
       "manual": {
         "title": "Enter the remote's address",
-        "data": { "address": "Bluetooth address" },
-        "data_description": { "address": "For example 98:77:D5:50:D1:AC" }
+        "data": {
+          "address": "Bluetooth address"
+        },
+        "data_description": {
+          "address": "For example 98:77:D5:50:D1:AC"
+        }
       },
       "bluetooth_confirm": {
         "description": "Set up the Philips remote {address}?"
@@ -49,13 +53,21 @@
           "event_type": {
             "state": {
               "on": "On",
+              "on_double": "On (double press)",
               "off": "Off",
+              "off_double": "Off (double press)",
               "brightness_up": "Brightness up",
+              "brightness_up_double": "Brightness up (double press)",
               "brightness_down": "Brightness down",
+              "brightness_down_double": "Brightness down (double press)",
               "button_1": "Button 1",
+              "button_1_double": "Button 1 (double press)",
               "button_2": "Button 2",
+              "button_2_double": "Button 2 (double press)",
               "button_3": "Button 3",
+              "button_3_double": "Button 3 (double press)",
               "button_4": "Button 4",
+              "button_4_double": "Button 4 (double press)",
               "unknown": "Unknown button"
             }
           }

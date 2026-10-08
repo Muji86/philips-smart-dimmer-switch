@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import PhilipsRemote, PhilipsRemoteConfigEntry
-from .const import BUTTONS, UNKNOWN
+from .const import EVENT_TYPES
 from .entity import PhilipsRemoteEntity
 from .parser import Press
 
@@ -23,7 +23,7 @@ async def async_setup_entry(
 class PhilipsRemoteButtonEvent(PhilipsRemoteEntity, EventEntity):
     _attr_device_class = EventDeviceClass.BUTTON
     _attr_translation_key = "button"
-    _attr_event_types = [*BUTTONS.values(), UNKNOWN]
+    _attr_event_types = EVENT_TYPES
 
     def __init__(self, remote: PhilipsRemote) -> None:
         super().__init__(remote, "button")

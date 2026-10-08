@@ -16,3 +16,12 @@ BUTTONS: dict[int, str] = {
     0x13: "button_4",
 }
 UNKNOWN = "unknown"
+
+# Same button pressed again (new press counter) within this many seconds is a double press.
+DOUBLE_PRESS_WINDOW = 0.5
+DOUBLE_SUFFIX = "_double"
+EVENT_TYPES: list[str] = [
+    *BUTTONS.values(),
+    *(f"{name}{DOUBLE_SUFFIX}" for name in BUTTONS.values()),
+    UNKNOWN,
+]

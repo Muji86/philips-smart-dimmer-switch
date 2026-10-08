@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from dataclasses import replace
 import logging
+import time
 
 from homeassistant.components import bluetooth
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS, Platform
 from homeassistant.core import HomeAssistant, callback
 
-from .const import EVENT
+from .const import DOUBLE_PRESS_WINDOW, EVENT
 from .parser import Press, parse
 
 _LOGGER = logging.getLogger(__name__)
@@ -28,6 +30,7 @@ class PhilipsRemote:
         self.address = address
         self.battery: int | None = None
         self._last_counter: int | None = None
+        self._last_press: tuple[int, float] | None = None  # (button, monotonic time)
         self._listeners: list[Callable[[Press], None]] = []
 
         # Seed from the last advertisement HA already has, so a cached press
@@ -53,6 +56,19 @@ class PhilipsRemote:
             return
         self._last_counter = press.counter
         self.battery = press.battery
+        now = time.monotonic()
+        is_double = (
+            self._last_press is not None
+            and self._last_press[0] == press.button
+            and now - self._last_press[1] <= DOUBLE_PRESS_WINDOW
+        )
+        # After a double, the next press starts fresh (no triple-as-double).
+        self._last_press = None if is_double else (press.button, now)
+        self._dispatch(press)
+        if is_double:
+            self._dispatch(replace(press, double=True))
+
+    def _dispatch(self, press: Press) -> None:
         _LOGGER.debug("Press from %s: %s (%s)", self.address, press, press.name)
         # Plain bus event, kept for automations that listen to it directly.
         self.hass.bus.async_fire(
