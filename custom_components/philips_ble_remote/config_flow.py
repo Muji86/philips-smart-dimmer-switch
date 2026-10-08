@@ -18,8 +18,22 @@ from homeassistant.config_entries import (
 )
 from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import callback
+from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+)
 
-from .const import CONF_DOUBLE_PRESS, DOMAIN, MANUFACTURER_ID
+from .const import (
+    BUTTONS,
+    CONF_DOUBLE_DELAY,
+    CONF_DOUBLE_PREFIX,
+    DEFAULT_DOUBLE_DELAY,
+    DOMAIN,
+    MANUFACTURER_ID,
+    MAX_DOUBLE_DELAY,
+    MIN_DOUBLE_DELAY,
+)
 from .parser import Press, parse
 
 TITLE = "Philips Remote"
@@ -168,8 +182,22 @@ class PhilipsBleRemoteOptionsFlow(OptionsFlow):
     ) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(data=user_input)
-        current = self.config_entry.options.get(CONF_DOUBLE_PRESS, False)
-        return self.async_show_form(
-            step_id="init",
-            data_schema=vol.Schema({vol.Required(CONF_DOUBLE_PRESS, default=current): bool}),
-        )
+        options = self.config_entry.options
+        schema: dict[Any, Any] = {
+            vol.Required(
+                CONF_DOUBLE_DELAY,
+                default=options.get(CONF_DOUBLE_DELAY, DEFAULT_DOUBLE_DELAY),
+            ): NumberSelector(
+                NumberSelectorConfig(
+                    min=MIN_DOUBLE_DELAY,
+                    max=MAX_DOUBLE_DELAY,
+                    step=0.05,
+                    unit_of_measurement="s",
+                    mode=NumberSelectorMode.BOX,
+                )
+            )
+        }
+        for name in BUTTONS.values():
+            key = f"{CONF_DOUBLE_PREFIX}{name}"
+            schema[vol.Required(key, default=options.get(key, False))] = bool
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(schema))

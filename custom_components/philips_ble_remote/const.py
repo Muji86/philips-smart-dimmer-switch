@@ -17,10 +17,13 @@ BUTTONS: dict[int, str] = {
 }
 UNKNOWN = "unknown"
 
-# With double press enabled, a press is held this many seconds waiting for a second one
-# of the same button; two within the window become a single "<button>_double" event.
-DOUBLE_PRESS_WINDOW = 0.5
-CONF_DOUBLE_PRESS = "double_press"
+# A button with double press enabled is held for the configured delay waiting for a second
+# press; two within the delay become a single "<button>_double" event.
+CONF_DOUBLE_DELAY = "double_press_delay"
+DEFAULT_DOUBLE_DELAY = 0.5
+MIN_DOUBLE_DELAY = 0.1
+MAX_DOUBLE_DELAY = 2.0
+CONF_DOUBLE_PREFIX = "double_"  # per-button option key: "double_<button name>"
 DOUBLE_SUFFIX = "_double"
 EVENT_TYPES: list[str] = [
     *BUTTONS.values(),

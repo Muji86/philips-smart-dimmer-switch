@@ -79,11 +79,20 @@
     "step": {
       "init": {
         "title": "Philips remote options",
+        "description": "Tick the buttons that should detect a double press. Pressing one of them twice within the delay fires a single event ending in _double (for example on_double). A ticked button is held for the delay to see whether a second press follows, so its single presses are delayed by that long. Unticked buttons are reported instantly.",
         "data": {
-          "double_press": "Enable double press"
+          "double_press_delay": "Double press delay (seconds)",
+          "double_on": "Double press: On",
+          "double_off": "Double press: Off",
+          "double_brightness_up": "Double press: Brightness up",
+          "double_brightness_down": "Double press: Brightness down",
+          "double_button_1": "Double press: Button 1",
+          "double_button_2": "Double press: Button 2",
+          "double_button_3": "Double press: Button 3",
+          "double_button_4": "Double press: Button 4"
         },
         "data_description": {
-          "double_press": "Fire a \"<button>_double\" event when a button is pressed twice within 0.5 seconds. Every press is then held for 0.5 seconds to see whether a second one follows, which delays single presses. When off, presses are reported instantly and double presses are not detected."
+          "double_press_delay": "How long to wait for a second press (0.1 to 2 seconds)."
         }
       }
     }

@@ -41,14 +41,14 @@ Each remote is added as its own device.
 
 | Entity | Type | Notes |
 |---|---|---|
-| Button | `event` | Event types: `on`, `off`, `brightness_up`, `brightness_down`, `button_1`–`button_4`, `unknown`, and the `_double` variants (e.g. `on_double`) when double press is enabled. Attributes include the raw `button` code and `press_type`. |
+| Button | `event` | Event types: `on`, `off`, `brightness_up`, `brightness_down`, `button_1`–`button_4`, `unknown`, and the `_double` variants (e.g. `on_double`) for buttons with double press enabled. Attributes include the raw `button` code and `press_type`. |
 | Battery | `sensor` | Percent, diagnostic. Updates when a button is pressed. |
 
 ## Double press (optional)
 
-Off by default. Enable it under **Settings → Devices & services → Philips BLE Remote → Configure → Enable double press**.
+Off by default, and set per button. Go to **Settings → Devices & services → Philips BLE Remote → Configure**, tick **Double press** for the buttons you want, and set the **Double press delay** (0.1–2 seconds, default 0.5).
 
-When enabled, pressing the same button twice within 0.5 seconds fires a single `<button>_double` event (e.g. `on_double`) instead of two `on` events. To tell the two apart, every press is held for 0.5 seconds to see whether a second one follows, so **single presses are delayed by 0.5 seconds**. A different button pressed in the meantime releases the held press immediately. When disabled, presses are reported instantly and no double events are fired. The window is `DOUBLE_PRESS_WINDOW` in `const.py`.
+For a ticked button, pressing it twice within the delay fires a single `<button>_double` event (e.g. `on_double`) instead of two `on` events. To tell the two apart, each press of that button is held for the delay to see whether a second one follows, so **its single presses are delayed by that long**. Buttons that aren't ticked are reported instantly, and pressing any other button releases a held press immediately.
 
 ## Automation example
 

@@ -12,7 +12,13 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ADDRESS, Platform
 from homeassistant.core import HomeAssistant, callback
 
-from .const import CONF_DOUBLE_PRESS, DOUBLE_PRESS_WINDOW, EVENT
+from .const import (
+    BUTTONS,
+    CONF_DOUBLE_DELAY,
+    CONF_DOUBLE_PREFIX,
+    DEFAULT_DOUBLE_DELAY,
+    EVENT,
+)
 from .parser import Press, parse
 
 _LOGGER = logging.getLogger(__name__)
@@ -25,10 +31,17 @@ type PhilipsRemoteConfigEntry = ConfigEntry[PhilipsRemote]
 class PhilipsRemote:
     """Tracks one remote and hands each new press to its entities."""
 
-    def __init__(self, hass: HomeAssistant, address: str, double_press: bool) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        address: str,
+        double_delay: float,
+        double_buttons: set[str],
+    ) -> None:
         self.hass = hass
         self.address = address
-        self.double_press = double_press
+        self.double_delay = double_delay
+        self.double_buttons = double_buttons
         self.battery: int | None = None
         self._last_counter: int | None = None
         self._pending: Press | None = None
@@ -58,7 +71,9 @@ class PhilipsRemote:
             return
         self._last_counter = press.counter
         self.battery = press.battery
-        if not self.double_press:
+        if press.name not in self.double_buttons:
+            # Instant, and a press of any other button ends a pending one.
+            self._flush()
             self._dispatch(press)
             return
         if self._pending is not None and self._pending.button == press.button:
@@ -69,7 +84,7 @@ class PhilipsRemote:
         # A different button ends any pending press right away.
         self._flush()
         self._pending = press
-        self._timer = self.hass.loop.call_later(DOUBLE_PRESS_WINDOW, self._flush)
+        self._timer = self.hass.loop.call_later(self.double_delay, self._flush)
 
     @callback
     def _flush(self) -> None:
@@ -108,8 +123,16 @@ class PhilipsRemote:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PhilipsRemoteConfigEntry) -> bool:
+    options = entry.options
     remote = PhilipsRemote(
-        hass, entry.data[CONF_ADDRESS], entry.options.get(CONF_DOUBLE_PRESS, False)
+        hass,
+        entry.data[CONF_ADDRESS],
+        options.get(CONF_DOUBLE_DELAY, DEFAULT_DOUBLE_DELAY),
+        {
+            name
+            for name in BUTTONS.values()
+            if options.get(f"{CONF_DOUBLE_PREFIX}{name}", False)
+        },
     )
     entry.runtime_data = remote
     entry.async_on_unload(remote.async_shutdown)
